@@ -1,6 +1,7 @@
 package Tienda;
 import Bases_de_Datos.ProductosBBDD;
 
+import javax.swing.*;
 import java.sql.SQLException;
 
 public class Productos extends Administrador{
@@ -10,20 +11,30 @@ public class Productos extends Administrador{
     private int cantidad;
 
     public String agregarProductos(Boolean admin,String nombre_producto,String descripcion,double precio, int cantidad) throws SQLException {
-        if(productos.existeProducto(nombre_producto)){
-            productos.actualizarCantidad(nombre_producto,cantidad);
-            return "Actualizado con exito, ya existia el producto";
+        if(admin) {
+            if (productos.existeProducto(nombre_producto)) {
+                productos.actualizarCantidad(nombre_producto, cantidad);
+                return "Actualizado con exito, ya existia el producto";
+            } else {
+                productos.addProductos(nombre_producto, descripcion, precio, cantidad);
+                return "Se ha agregado con exito el producto";
+            }
         }else{
-            productos.addProductos(nombre_producto, descripcion, precio, cantidad);
-            return "Se ha agregado con exito el producto";
+            JOptionPane.showMessageDialog(null,"Contraseña de administador incorrecta");
+            return " ";
         }
     }
     public String eliminarProducto(Boolean admin,String nombre_producto) throws SQLException {
-        if(productos.existeProducto(nombre_producto)){
-            productos.deleteProducto(nombre_producto);
-            return "Producto eliminado con exito";
+        if(admin) {
+            if (productos.existeProducto(nombre_producto)) {
+                productos.deleteProducto(nombre_producto);
+                return "Producto eliminado con exito";
+            } else {
+                return "No se puede borrar el producto por que no existe";
+            }
         }else{
-            return "No se puede borrar el producto por que no existe";
+            JOptionPane.showMessageDialog(null,"Contraseña de administador incorrecta");
+            return "";
         }
     }
 
@@ -34,5 +45,4 @@ public class Productos extends Administrador{
             return false;
         }
     }
-
 }

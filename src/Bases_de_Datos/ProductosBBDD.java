@@ -2,34 +2,39 @@ package Bases_de_Datos;
 
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ProductosBBDD {
 
     private final String producto="INSERT INTO productos (NOMBRE_PRODUCTO,PRECIO_UNIDAD,CANTIDAD) VALUES (?,?,?)";
-    private final String verificarConsulta="SELECT NOMBRE_PRODUCTO FROM productos WHERE NOMBRE_PRODUCTO=?";
+    private final String verificarConsulta="SELECT NOMBRE_PRODUCTO FROM productos WHERE CANTIDAD>0 AND NOMBRE_PRODUCTO=?";
+    private final String verificarEscaces="SELECT NOMBRE_PRODUCTO,CANTIDAD FROM productos WHERE CANTIDAD<=8";
     private final String updateCantidad="UPDATE productos SET CANTIDAD=(CANTIDAD+?) WHERE NOMBRE_PRODUCTO=?";
     private final String cleanProducto="DELETE FROM productos WHERE NOMBRE_ARTICULO=?";
+    private final String vendido="UPDATE productos SET CANTIDAD=(CANTIDAD-?) WHERE NOMBRE_PRODUCTO=?";
 
-    private PreparedStatement preparedStatement=null;
-    private PreparedStatement verificar=null;
-    private PreparedStatement update=null;
-    private PreparedStatement delete=null;
+    private final String verificarVenta="SELECT NOMBRE_PRODUCTO,CANTIDAD FROM productos WHERE CANTIDAD>? AND NOMBRE_ARTICULO=?";
+
+    protected PreparedStatement preparedStatement=null;
+    protected Statement verificar=null;
+    protected PreparedStatement update=null;
+    protected PreparedStatement delete=null;
+    protected PreparedStatement producto_vendido=null;
+
 
     Conexion conexion=new Conexion();
     Connection accesBD=conexion.dameConexion();
-    ResultSet resultadosVerificar;
+    protected ResultSet resultadosVerificar=null;
 
     public boolean existeProducto(String nombre_producto) throws SQLException {
-        verificar=accesBD.prepareStatement(verificarConsulta);
-        verificar.setString(1,nombre_producto);
-        resultadosVerificar=verificar.executeQuery();
+        preparedStatement=accesBD.prepareStatement(verificarConsulta);
+        preparedStatement.setString(1,nombre_producto);
+        resultadosVerificar=preparedStatement.executeQuery();
         if(resultadosVerificar.next()){
+            //resultadosVerificar.close();
             return true;
         }else{
+            //resultadosVerificar.close();
             return false;
         }
     }
@@ -68,7 +73,50 @@ public class ProductosBBDD {
             JOptionPane.showMessageDialog(null,ex.getMessage());
             return false;
         }
+    }
+    public boolean verificarVenta(String nombre_producto, int cantidad) throws SQLException {
+        preparedStatement=accesBD.prepareStatement(verificarVenta);
+        preparedStatement.setInt(1,cantidad);
+        preparedStatement.setString(2,nombre_producto);
+        resultadosVerificar=preparedStatement.executeQuery();
+        if(resultadosVerificar.next()){
+            JOptionPane.showMessageDialog(null,"Producto vendido con exito");
+            productoVendido(nombre_producto,cantidad);
+            //resultadosVerificar.close();
+            return true;
+        }else{
+            JOptionPane.showMessageDialog(null,"La cantidad de productos requeridos no se pueden vender, no hay suficientes unidades. unidades disponibles: "+resultadosVerificar.getInt("CANTIDAD"));
+            //resultadosVerificar.close();
+            return false;
+        }
 
     }
+    public void productoVendido(String nombre_producto,int cantidad){
+        try {
+            producto_vendido=accesBD.prepareStatement(vendido);
+            producto_vendido.setString(1,nombre_producto);
+            producto_vendido.setInt(2,cantidad);
+            producto_vendido.executeUpdate();
+        }catch (Exception ex){
+            JOptionPane.showMessageDialog(null,ex.getMessage());
+        }
+    }
+
+    public void alertaEscaces()  {
+        try {
+        verificar=accesBD.createStatement();
+        resultadosVerificar=verificar.executeQuery(verificarEscaces);
+
+        if(resultadosVerificar.next()){
+                JOptionPane.showMessageDialog(null, "Debes abastecer EL INVENTARIO DE LA FABRICA de este producto esta escaceando " + resultadosVerificar.getString("NOMBRE_PRODUCTO"));
+        }else{
+            JOptionPane.showMessageDialog(null,"Cantidad de "+resultadosVerificar.getString("NOMBRE_PRODUCTO")+" disponible es "+resultadosVerificar.getInt("UNIDADES_DISPONIBLES"));
+        }
+        }catch (Exception ex){
+            System.out.println(ex.toString());
+        }
+    }
+
+
 
 }
