@@ -10,10 +10,10 @@ public class ProductosBBDD {
     private final String verificarConsulta="SELECT NOMBRE_PRODUCTO FROM productos WHERE CANTIDAD>0 AND NOMBRE_PRODUCTO=?";
     private final String verificarEscaces="SELECT NOMBRE_PRODUCTO,CANTIDAD FROM productos WHERE CANTIDAD<=8";
     private final String updateCantidad="UPDATE productos SET CANTIDAD=(CANTIDAD+?) WHERE NOMBRE_PRODUCTO=?";
-    private final String cleanProducto="DELETE FROM productos WHERE NOMBRE_ARTICULO=?";
+    private final String cleanProducto="DELETE FROM productos WHERE NOMBRE_PRODUCTO=?";
     private final String vendido="UPDATE productos SET CANTIDAD=(CANTIDAD-?) WHERE NOMBRE_PRODUCTO=?";
 
-    private final String verificarVenta="SELECT NOMBRE_PRODUCTO,CANTIDAD FROM productos WHERE CANTIDAD>? AND NOMBRE_ARTICULO=?";
+    private final String verificarVenta="SELECT NOMBRE_PRODUCTO,CANTIDAD FROM productos WHERE CANTIDAD>? AND NOMBRE_PRODUCTO=?";
 
     protected PreparedStatement preparedStatement=null;
     protected Statement verificar=null;
@@ -26,15 +26,21 @@ public class ProductosBBDD {
     Connection accesBD=conexion.dameConexion();
     protected ResultSet resultadosVerificar=null;
 
-    public boolean existeProducto(String nombre_producto) throws SQLException {
-        preparedStatement=accesBD.prepareStatement(verificarConsulta);
-        preparedStatement.setString(1,nombre_producto);
-        resultadosVerificar=preparedStatement.executeQuery();
-        if(resultadosVerificar.next()){
-            //resultadosVerificar.close();
-            return true;
-        }else{
-            //resultadosVerificar.close();
+    public boolean existeProducto(String nombre_producto) {
+        try {
+            preparedStatement = accesBD.prepareStatement(verificarConsulta);
+            preparedStatement.setString(1, nombre_producto);
+            resultadosVerificar = preparedStatement.executeQuery();
+            resultadosVerificar.beforeFirst();
+            if (resultadosVerificar.next()) {
+                //resultadosVerificar.close();
+                return true;
+            } else {
+                //resultadosVerificar.close();
+                return false;
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
             return false;
         }
     }
@@ -47,7 +53,8 @@ public class ProductosBBDD {
             preparedStatement.executeUpdate();
             return true;
         }catch (Exception ex){
-            JOptionPane.showMessageDialog(null,ex.getMessage());
+            //JOptionPane.showMessageDialog(null,ex.getMessage());
+            System.out.println(ex.getMessage());
             return false;
         }
     }
@@ -59,7 +66,8 @@ public class ProductosBBDD {
             update.executeUpdate();
             return true;
         }catch (Exception ex){
-            JOptionPane.showMessageDialog(null,ex.getMessage());
+            //JOptionPane.showMessageDialog(null,ex.getMessage());
+            System.out.println(ex.getMessage());
             return false;
         }
     }
@@ -70,7 +78,8 @@ public class ProductosBBDD {
             delete.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,ex.getMessage());
+            //JOptionPane.showMessageDialog(null,ex.getMessage());
+            System.out.println(ex.getMessage());
             return false;
         }
     }
@@ -79,13 +88,15 @@ public class ProductosBBDD {
         preparedStatement.setInt(1,cantidad);
         preparedStatement.setString(2,nombre_producto);
         resultadosVerificar=preparedStatement.executeQuery();
+        resultadosVerificar.beforeFirst();
         if(resultadosVerificar.next()){
             JOptionPane.showMessageDialog(null,"Producto vendido con exito");
             productoVendido(nombre_producto,cantidad);
             //resultadosVerificar.close();
             return true;
         }else{
-            JOptionPane.showMessageDialog(null,"La cantidad de productos requeridos no se pueden vender, no hay suficientes unidades. unidades disponibles: "+resultadosVerificar.getInt("CANTIDAD"));
+            //JOptionPane.showMessageDialog(null,"La cantidad de productos requeridos no se pueden vender, no hay suficientes unidades. unidades disponibles: "+resultadosVerificar.getInt("CANTIDAD"));
+            System.out.println("La cantidad de productos requeridos no se pueden vender, no hay suficientes unidades disponibles: "+resultadosVerificar.getInt("CANTIDAD"));
             //resultadosVerificar.close();
             return false;
         }
@@ -98,7 +109,8 @@ public class ProductosBBDD {
             producto_vendido.setInt(2,cantidad);
             producto_vendido.executeUpdate();
         }catch (Exception ex){
-            JOptionPane.showMessageDialog(null,ex.getMessage());
+            //JOptionPane.showMessageDialog(null,ex.getMessage());
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -108,9 +120,11 @@ public class ProductosBBDD {
         resultadosVerificar=verificar.executeQuery(verificarEscaces);
 
         if(resultadosVerificar.next()){
-                JOptionPane.showMessageDialog(null, "Debes abastecer EL INVENTARIO DE LA FABRICA de este producto esta escaceando " + resultadosVerificar.getString("NOMBRE_PRODUCTO"));
+                //JOptionPane.showMessageDialog(null, "Debes abastecer EL INVENTARIO DE LA FABRICA de este producto esta escaceando " + resultadosVerificar.getString("NOMBRE_PRODUCTO"));
+            System.out.println("Debes abastecer EL INVENTARIO DE LA FABRICA de este producto esta escaceando " + resultadosVerificar.getString("NOMBRE_PRODUCTO"));
         }else{
-            JOptionPane.showMessageDialog(null,"Cantidad de "+resultadosVerificar.getString("NOMBRE_PRODUCTO")+" disponible es "+resultadosVerificar.getInt("UNIDADES_DISPONIBLES"));
+            //JOptionPane.showMessageDialog(null,"Cantidad de "+resultadosVerificar.getString("NOMBRE_PRODUCTO")+" disponible es "+resultadosVerificar.getInt("UNIDADES_DISPONIBLES"));
+            System.out.println("Cantidad de "+resultadosVerificar.getString("NOMBRE_PRODUCTO")+" disponible es "+resultadosVerificar.getInt("UNIDADES_DISPONIBLES"));
         }
         }catch (Exception ex){
             System.out.println(ex.toString());

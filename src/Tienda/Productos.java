@@ -20,7 +20,8 @@ public class Productos extends Administrador{
                 return "Se ha agregado con exito el producto";
             }
         }else{
-            JOptionPane.showMessageDialog(null,"Contraseña de administador incorrecta");
+            //JOptionPane.showMessageDialog(null,"Contraseña de administador incorrecta");
+            System.out.println("Contraseña de administador incorrecta");
             return " ";
         }
     }
@@ -33,7 +34,8 @@ public class Productos extends Administrador{
                 return "No se puede borrar el producto por que no existe";
             }
         }else{
-            JOptionPane.showMessageDialog(null,"Contraseña de administador incorrecta");
+            //JOptionPane.showMessageDialog(null,"Contraseña de administador incorrecta");
+            System.out.println("Contraseña de administador incorrecta");
             return "";
         }
     }

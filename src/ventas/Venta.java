@@ -13,12 +13,9 @@ public class Venta {
         venta.ventasRealizadas(lugar);
     }
     public void vender(String id_cliente,String nombre_cliente,String nombre_producto,int cantidad,String lugar_compra){
-        double dinero=0;
-        System.out.print("Efectivo del usuario: ");
-        dinero=write.nextDouble();
-        venta.vender(id_cliente, nombre_cliente, nombre_producto, cantidad, lugar_compra,dinero);
+        venta.vender(id_cliente, nombre_cliente, nombre_producto, cantidad, lugar_compra);
     }
-    public void ventas() throws SQLException {
-        venta.ventas();
+    public void ventas(String lugar) throws SQLException {
+        venta.ventas(lugar);
     }
 }

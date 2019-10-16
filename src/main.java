@@ -11,10 +11,10 @@ public class main {
         Scanner write=new Scanner(System.in);
         Productos productos=new Productos();
         Inventario_Fabrica inventarioFabrica=new Inventario_Fabrica();
-        //Venta venta=new Venta();
-        /*Productos cliente=new Productos();
-        ProductosBBDD cl=new ProductosBBDD(); */
         Ventas venta=new Ventas();
+        /*Productos cliente=new Productos();
+        ProductosBBDD cl=new ProductosBBDD();
+        Ventas venta=new Ventas();*/
 
         try {
             //String mensaje=cliente.agregarProductos(true,"hola","prueba",20000,4);
@@ -22,53 +22,128 @@ public class main {
         }catch (Exception ex){
 
         }
-        try {
+        /*try {
             //cl.alertaEscaces();
            // venta.ventas();
-
-            venta.vender("11280240080","Waner Andrés","nombre",2,"fabrica",23343.0);
+            System.out.println(productos.agregarProductos(true,"effember","lol",100000,1));
+            inventarioFabrica.addProductos(true,"effember",100000,1);
+            venta.vender("14377438773","Freicer","effember",2,"fabrica");
             venta.ventasRealizadas("fabrica");
+            venta.ventas();
         }catch (Exception EXX){
-           System.out.println(EXX.getMessage());
-        }
+           //System.out.println(EXX.getMessage());
+        }*/
 
-     /*   byte opc=0;
-        while (opc!=6){
+
+       byte opc=1;
+        while (opc!=0){
+
             System.out.println("<--------> BIENVENIDO AL SISTEMA WALFREBRE <---------->");
             System.out.println("1. Realizar Venta");
-            System.out.println("2. Numero de ventas realizadas");
-            System.out.println("3. Ver registro de ventas realizadas en la Tienda");
+            System.out.println("2. Numero de ventas realizadas en la fabrica ");
+            System.out.println("3. Numero de ventas realizadas en la tienda");
             System.out.println("4. Ver registro de ventas realizadas en la Tienda");
-            System.out.println("5. Agregar Productos a la fabrica");
-            System.out.println("7. Agregar Productos a la tienda");
-            System.out.println("9. Salir");
+            System.out.println("5. Ver registro de ventas realizadas en la Fabrica");
+            System.out.println("6. Agregar Productos a la tienda");
+            System.out.println("7. Agregar Productos a la fabrica");
+            System.out.println("8. Borrar producto de la tienda ");
+            System.out.println("0. Salir");
             System.out.print("\n Opcion-->");
-            opc=write.nextByte();
+            try {
 
-            switch (opc){
-                case 1:
-                    String id,nombre,producto,lugar;
-                    int cantidad=0;
-                    write.nextLine();
-                    System.out.print("Identificacón: ");
-                    id=write.nextLine();
-                    System.out.print("Nombre Cliente: ");
-                    nombre=write.nextLine();
-                    System.out.print("Nombre Producto: ");
-                    producto=write.nextLine();
-                    System.out.print("Unidades: ");
-                    cantidad=write.nextInt();
-                    write.nextLine();
-                    System.out.print("Lugar de compra(tienda o fabrica): ");
-                    lugar=write.nextLine();
-                    venta.vender(id,nombre,producto,cantidad,lugar,2000);
-                    break;
-                default:
-                    System.out.println("opcion no disponible");
-                    break;
+                opc = write.nextByte();
+
+                switch (opc) {
+                    case 1:
+                        venta.vender("143777733", "Andrés Valencia", "camisa polo azul", 2, "tienda");
+                        break;
+                    case 2:
+                        venta.ventasRealizadas("fabrica");
+                        break;
+
+                    case 3:
+                        venta.ventasRealizadas("tienda");
+                        break;
+
+                    case 4:
+                            venta.ventas("tienda");
+                        break;
+
+                    case 5:
+                        venta.ventas("fabrica");
+                        break;
+
+                    case 6:
+                        String contraseña="",nombre="",descripcion="";
+                        double precio=0;
+                        int cantidad=0;
+                        write.nextLine();
+                        System.out.print("Ingresa la contraseña del administrador: ");
+                        contraseña=write.nextLine();
+
+                        if(productos.verificarAdministrador(contraseña)){
+                            System.out.print("Nombre del producto: ");
+                            nombre=write.nextLine();
+                            System.out.print("Descripción: ");
+                            descripcion=write.nextLine();
+                            System.out.print("Precio por unidad: ");
+                            precio=write.nextDouble();
+                            System.out.print("Unidades: ");
+                            cantidad=write.nextInt();
+                            System.out.println(productos.agregarProductos(true,nombre,descripcion,precio,cantidad));
+                        }else{
+                            System.out.println("Contraseña incorrecta");
+                        }
+                        break;
+
+                    case 7:
+                        String contraseña2="",nombre2="";
+                        double precio2=0;
+                        int cantidad2=0;
+                        write.nextLine();
+                        System.out.print("Ingresa la contraseña del administrador: ");
+                        contraseña=write.nextLine();
+
+                        if(productos.verificarAdministrador(contraseña)){
+                            System.out.print("Nombre del producto: ");
+                            nombre2=write.nextLine();
+
+                            System.out.print("Precio por unidad: ");
+                            precio2=write.nextDouble();
+
+                            System.out.print("Unidades: ");
+                            cantidad2=write.nextInt();
+
+                            inventarioFabrica.addProductos(true,nombre2,precio2,cantidad2);
+                        }else{
+                            System.out.println("Contraseña incorrecta");
+                        }
+                        break;
+                    case 8:
+                        String contraseña3;
+                        String nombre3;
+                        write.nextLine();
+
+                        System.out.print("Ingresa la contraseña del administrador: ");
+                        contraseña3=write.nextLine();
+
+                        if(productos.verificarAdministrador(contraseña3)){
+                            System.out.print("Nombre del producto: ");
+                            nombre3=write.nextLine();
+                            System.out.println(productos.eliminarProducto(true,nombre3));
+                        }
+                        else{
+                            System.out.println("Contraseña incorrecta");
+                        }
+                        break;
+                    default:
+                        System.out.println("opcion no disponible");
+                        break;
+                }
+            }catch (Exception ex){
+                System.out.println(ex.getMessage());
             }
-
-        } */
+        }
 
 
     }
