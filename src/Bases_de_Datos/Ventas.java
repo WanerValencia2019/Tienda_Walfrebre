@@ -164,7 +164,7 @@ public class Ventas extends ProductosBBDD{
                 }
 
             }
-        }catch (Exception ex){
+        }catch (SQLException ex){
            System.out.println(ex.getMessage());
         }
     }

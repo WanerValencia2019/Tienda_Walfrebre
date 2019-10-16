@@ -13,7 +13,7 @@ public class ProductosBBDD {
     private final String cleanProducto="DELETE FROM productos WHERE NOMBRE_PRODUCTO=?";
     private final String vendido="UPDATE productos SET CANTIDAD=(CANTIDAD-?) WHERE NOMBRE_PRODUCTO=?";
 
-    private final String verificarVenta="SELECT NOMBRE_PRODUCTO,CANTIDAD FROM productos WHERE CANTIDAD>? AND NOMBRE_PRODUCTO=?";
+    private final String verificarVenta="SELECT NOMBRE_PRODUCTO, CANTIDAD FROM productos WHERE CANTIDAD >= ? AND NOMBRE_PRODUCTO = ?";
 
     protected PreparedStatement preparedStatement=null;
     protected Statement verificar=null;
@@ -84,13 +84,18 @@ public class ProductosBBDD {
         }
     }
     public boolean verificarVenta(String nombre_producto, int cantidad) throws SQLException {
+
         preparedStatement=accesBD.prepareStatement(verificarVenta);
         preparedStatement.setInt(1,cantidad);
         preparedStatement.setString(2,nombre_producto);
         resultadosVerificar=preparedStatement.executeQuery();
+        //System.out.println("SQl");
         resultadosVerificar.beforeFirst();
-        if(resultadosVerificar.next()){
-            JOptionPane.showMessageDialog(null,"Producto vendido con exito");
+       boolean hasfirst = resultadosVerificar.first();
+       //System.out.println(resultadosVerificar.isFirst());
+
+        if(hasfirst){
+            //JOptionPane.showMessageDialog(null,"Producto vendido con exito");
             productoVendido(nombre_producto,cantidad);
             //resultadosVerificar.close();
             return true;
@@ -105,8 +110,8 @@ public class ProductosBBDD {
     public void productoVendido(String nombre_producto,int cantidad){
         try {
             producto_vendido=accesBD.prepareStatement(vendido);
-            producto_vendido.setString(1,nombre_producto);
-            producto_vendido.setInt(2,cantidad);
+            producto_vendido.setInt(1,cantidad);
+            producto_vendido.setString(2, nombre_producto);
             producto_vendido.executeUpdate();
         }catch (Exception ex){
             //JOptionPane.showMessageDialog(null,ex.getMessage());

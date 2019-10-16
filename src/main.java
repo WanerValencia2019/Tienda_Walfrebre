@@ -4,14 +4,18 @@ import ventas.Venta;
 
 import Bases_de_Datos.*;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 public class main {
     public static void main(String[] args) {
+
         Scanner write=new Scanner(System.in);
         Productos productos=new Productos();
         Inventario_Fabrica inventarioFabrica=new Inventario_Fabrica();
+        Inventario inventario=new Inventario();
         Ventas venta=new Ventas();
+        ProductosBBDD productosBBDD=new ProductosBBDD();
         /*Productos cliente=new Productos();
         ProductosBBDD cl=new ProductosBBDD();
         Ventas venta=new Ventas();*/
@@ -49,27 +53,48 @@ public class main {
             System.out.println("8. Borrar producto de la tienda ");
             System.out.println("0. Salir");
             System.out.print("\n Opcion-->");
+
             try {
 
                 opc = write.nextByte();
 
                 switch (opc) {
                     case 1:
-                        venta.vender("143777733", "Andrés Valencia", "camisa polo azul", 2, "tienda");
+                        inventario.alertaEscaces();
+                        productosBBDD.alertaEscaces();
+                        write.nextLine();
+                        System.out.println("-------CLIENTE------");
+                        System.out.print("Identificación: ");
+                        String id=write.nextLine();
+                        System.out.print("Nombre: ");
+                        String name=write.nextLine();
+                        System.out.print("Nombre Producto: ");
+                        String product=write.nextLine();
+                        System.out.print("Unidadades: ");
+                        int unidades=write.nextInt();
+                        write.nextLine();
+                        System.out.print("Lugar de compra (tienda o fabrica): ");
+                        String lugar=write.nextLine();
+                        System.out.println();
+                        venta.vender(id, name, product, unidades, lugar);
                         break;
                     case 2:
+                        inventario.alertaEscaces();
                         venta.ventasRealizadas("fabrica");
                         break;
 
                     case 3:
+                        productosBBDD.alertaEscaces();
                         venta.ventasRealizadas("tienda");
                         break;
 
                     case 4:
+                            productosBBDD.alertaEscaces();
                             venta.ventas("tienda");
                         break;
 
                     case 5:
+                        inventario.alertaEscaces();
                         venta.ventas("fabrica");
                         break;
 
